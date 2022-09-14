@@ -27,42 +27,47 @@ function createNewGame(data) {
     rooms[data.gameID].creator = this.username;
     rooms[data.gameID].isOpen = true;
     rooms[data.gameID].players = [this.username];
+    rooms[data.gameID].gameID = data.gameID
 
     if (!gamesInSession.includes(rooms[data.gameID])) gamesInSession.push(rooms);
+
 }
 
 function opponentJoinedGame(data) {
     let socket = this;
-    const gameID = data.gameID.slice(5);
 
     const room = gamesInSession.map((room) => {
-        if (!room[gameID]) {
+        if (!room[data.gameID]) {
             socket.emit("status", "Game doesn't exist.")
         } 
-        return room[gameID]
+        return room[data.gameID]
     })
 
     if (room[0].players.length < 2) {
-        socket.join(data.gameID);
+        socket.join(`Room-${data.gameID}`);
         room[0].players.push(data.opponentUserName)
     } else {
         socket.emit('status', 'This room is full.')
+        console.log("THIS ROOM IS FULL")
     }
+
 }
 
 function findAllGames() {
 
-    const rooms = Array.from(io.sockets.adapter.rooms);
-    const roomsWithGameID = rooms.filter((room) => {
-        // Filter out rooms explicitly created with an
-        // added object specifying gameID, and creator.
-        if (room[0].length === 41) {
-            return room
-        } 
-    })
+    const currentGames = [];
+    
+    if (!gamesInSession) {
+        io.emit('status', 'No games in session.')
+    } else {
+        gamesInSession.map((game) => {
+            for (let property in game) {
+                currentGames.push(game[property])
+            }
+        })
+    }
 
-
-    io.emit('listAllGames', roomsWithGameID)
+    io.emit('listAllGames', currentGames);
 }
 
 exports.initializeGame = initGame
