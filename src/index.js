@@ -19,7 +19,10 @@ router.get('/', (req, res) => {
 
 const io = socketio(server, {
     cors: {
-        origin: "*"
+        origin: "*",
+        methods: ['GET'],
+        allowedHeaders: ['cors-header'],
+        credentials: true
     }
 }) 
 
