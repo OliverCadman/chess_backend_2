@@ -1,5 +1,6 @@
 const listeners = require('./listeners');
-const serverless = require('serverless-http')
+const serverless = require('serverless-http');
+const cors = require('cors')
 
 const express = require('express');
 
@@ -13,9 +14,24 @@ const server = http.createServer(app);
 
 const router = express.Router();
 
+const allowedOrigins = ["https://react-video-chess.netlify.app/"];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed bt CORS"))
+        }
+    },
+    optionSuccessStatus: 200
+}
+
 router.get('/', (req, res) => {
     res.send('<h1 style="font-family:Arial, san-serif;">Serving React Chess</h1>')
 })
+
+router.use(cors(corsOptions))
 
 const io = socketio(server, {
   cors: {
