@@ -22,7 +22,6 @@ const io = socketio(server, {
     origin: "https://react-video-chess.netlify.app/",
     methods: ["GET"],
     allowedHeaders: ["cors-header"],
-    credentials: true,
   },
 }); 
 
