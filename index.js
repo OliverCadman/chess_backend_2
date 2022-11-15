@@ -10,6 +10,10 @@ const app = express();
 const socketio = require('socket.io');
 const server = http.createServer(app);
 
+app.get('/', (req, res) => {
+    res.send('<h1 style="font-family:Arial, san-serif;">Serving React Chess</h1>')
+})
+
 const io = socketio(server, {
     cors: {
         origin: "*"
