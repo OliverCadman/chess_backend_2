@@ -18,13 +18,13 @@ router.get('/', (req, res) => {
 })
 
 const io = socketio(server, {
-    cors: {
-        origin: "*",
-        methods: ['GET'],
-        allowedHeaders: ['cors-header'],
-        credentials: true
-    }
-}) 
+  cors: {
+    origin: "https://react-video-chess.netlify.app/",
+    methods: ["GET"],
+    allowedHeaders: ["cors-header"],
+    credentials: true,
+  },
+}); 
 
 io.on("connection", socket => {
     console.log("Connected")
