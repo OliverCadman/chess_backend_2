@@ -1,4 +1,5 @@
 const listeners = require('./listeners');
+const serverless = require('serverless-http')
 
 const express = require('express');
 
@@ -10,7 +11,9 @@ const app = express();
 const socketio = require('socket.io');
 const server = http.createServer(app);
 
-app.get('/', (req, res) => {
+const router = express.Router();
+
+router.get('/', (req, res) => {
     res.send('<h1 style="font-family:Arial, san-serif;">Serving React Chess</h1>')
 })
 
@@ -30,3 +33,7 @@ io.on("connection", socket => {
 server.listen(process.env.PORT || 3000, () => {
     console.log("Listening on port 3001")
 });
+
+app.use('/.netlify/functions/index', router)
+
+module.exports.handler = serverless(app)

@@ -3,10 +3,10 @@ services:
   web:
     build:
       context: ./
-      target: dev
+      target: production
     volumes:
       - .:/src
-    command: npm run devStart
+    command: node index.js
     ports:
       - "3000:3000"
     environment:
