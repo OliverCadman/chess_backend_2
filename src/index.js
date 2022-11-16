@@ -36,8 +36,7 @@ router.use(cors(corsOptions))
 const io = socketio(server, {
   cors: {
     origin: "https://react-video-chess.netlify.app/",
-    methods: ["GET"],
-    allowedHeaders: ["cors-header"],
+    methods: ["GET"]
   },
 }); 
 
