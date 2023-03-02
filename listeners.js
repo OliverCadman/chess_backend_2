@@ -10,13 +10,10 @@ const initGame = (sio, socket) => {
   gameSocket.on("opponentJoinedGame", opponentJoinedGame);
   gameSocket.on("playerJoinedGame", opponentJoinedGame);
   gameSocket.on("findAllGames", findAllGames);
-  gameSocket.on("disconnect", (data) => {
-    gameSocket.emit("disconnected");
-  });
+  gameSocket.on("disconnectGame", deleteGame);
   gameSocket.on("new move", handleMove);
   gameSocket.on("requestUserName", requestUserName);
   gameSocket.on("receivedUsername", receivedUsername);
-  gameSocket.on("deleteGame", deleteGame);
 
   initChat();
 };
@@ -121,7 +118,12 @@ function handleMove(data) {
 }
 
 function deleteGame(data) {
-  console.log("DELETE GAME DATA", gameSocket);
+  console.log('GAMES IN SESSION:', gamesInSession);
+  gamesInSession.filter(room => {
+     console.log("ROOM!!!!!!", room)
+  })
+  console.log('GAMES IN SESSION AFTER DELETE:', gamesInSession)
+  console.log("DELETE GAME DATA (2nd):", data);
 }
 
 function findAllGames() {

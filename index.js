@@ -11,7 +11,7 @@ const server = http.createServer(app);
 
 app.get("/", (req, res) => {
   res.send(
-    '<h1 style="font-family:Arial, san-serif;">Serving React Chess</h1>'
+    '<h1 style="font-family:Arial, san-serif;">Serving React Chess. Nothing to see here!</h1>'
   );
 });
 
