@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    volumes:
+      - .:/src
+    ports:
+      - "4003:3000"
