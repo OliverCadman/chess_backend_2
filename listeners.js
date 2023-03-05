@@ -4,7 +4,7 @@ let gamesInSession = [];
 let rooms = {};
 
 const initGame = (sio, socket) => {
-  console.log('hello')
+  console.log("hello");
   io = sio;
   gameSocket = socket;
   gameSocket.on("createNewGame", createNewGame);
@@ -57,17 +57,16 @@ function createNewGame(data) {
     gamesInSession.push(rooms[data.gameID]);
   }
 
+  console.log("GAMES IN SESSION...", gamesInSession);
+
   this.emit("gameCreated", { mySocketID: this.id });
 }
 
 function requestUserName(gameID) {
-  console.log("GAME ID IN REQUEST USERNAME:", gameID);
   io.to(gameID).emit("giveUsername", this.id);
-  console.log("IO IN REQUEST USERNAME:", io);
 }
 
 function receivedUsername(data) {
-  console.log("RECEIVED USERNAME:", data);
   data.socketId = this.id;
   io.to(data.gameid).emit("getOpponentUserName", data);
 }
@@ -78,30 +77,32 @@ function opponentJoinedGame(data) {
   console.groupEnd();
   let socket = this;
 
-  console.log("SOCKET", socket.id);
+  // console.log("SOCKET", socket.id);
 
   const roomID = `Room-${data.gameID}`;
 
-  const room = gamesInSession.map((room) => {
-    if (!room.gameID !== data.gameID) {
-      socket.emit("status", "Game doesn't exist.");
-    }
-    return room;
-  });
+  const room = gamesInSession.find((room) => room.gameID === data.gameID);
 
-  if (room[0].players.length < 2) {
+  if (!room) {
+    socket.emit("status", "Game doesn't exist.");
+    return;
+  }
+
+  console.log("ROOM FOUND:", room);
+
+  if (room.players.length < 2) {
     socket.join(`Room-${data.gameID}`);
-    room[0].players.push(data.opponentUserName);
-    room[0].socketIDs.push(socket.id);
+    room.players.push(data.opponentUserName);
+    room.socketIDs.push(socket.id);
 
-    const socketIDArray = room[0].socketIDs;
+    const socketIDArray = room.socketIDs;
 
-    if (room[0].players.length === 2) {
+    if (room.players.length === 2) {
       data.socketID = socket.id;
       data.socketIDArray = socketIDArray;
       io.sockets.in(roomID).emit("startGame", {
         ...data,
-        playerNames: room[0].players,
+        playerNames: room.players,
       });
     }
   } else {
@@ -109,7 +110,7 @@ function opponentJoinedGame(data) {
   }
 
   io.sockets.in(roomID).emit("playerJoinedGame", {
-    playerNames: room[0].players,
+    playerNames: room.players,
   });
 }
 
@@ -119,12 +120,12 @@ function handleMove(data) {
 }
 
 function deleteGame(data) {
-  console.log('GAMES IN SESSION:', gamesInSession);
-  gamesInSession.filter(room => {
-     console.log("ROOM!!!!!!", room)
-  })
-  console.log('GAMES IN SESSION AFTER DELETE:', gamesInSession)
-  console.log("DELETE GAME DATA (2nd):", data);
+  // console.log('GAMES IN SESSION:', gamesInSession);
+  gamesInSession.filter((room) => {
+    console.log("ROOM!!!!!!", room);
+  });
+  // console.log('GAMES IN SESSION AFTER DELETE:', gamesInSession)
+  // console.log("DELETE GAME DATA (2nd):", data);
 }
 
 function findAllGames() {
