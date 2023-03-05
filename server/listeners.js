@@ -4,6 +4,7 @@ let gamesInSession = [];
 let rooms = {};
 
 const initGame = (sio, socket) => {
+  console.log('hello')
   io = sio;
   gameSocket = socket;
   gameSocket.on("createNewGame", createNewGame);
